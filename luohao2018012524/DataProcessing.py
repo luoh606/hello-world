@@ -13,10 +13,8 @@ class NumException(Exception):
 class NoneException(Exception):
     pass
 
-
 import random
 import string
-
 
 def dataSampling(datatype, datarange, num, strlen=8):
     '''
@@ -55,11 +53,10 @@ def dataSampling(datatype, datarange, num, strlen=8):
     except NumException:
         print("num must >= 0")
 
-def dataScreening(data, datatype, *args):
+def dataScreening(data, *args):
     '''
             :Description: Generate a given condition random data set.
             :param data: a dataset
-            :param datatype: int or float or str
             :param args: conditions
             :return: a dataset
         '''
@@ -67,29 +64,26 @@ def dataScreening(data, datatype, *args):
         result = set()
         if data is None:
             raise NoneException
-        try:
-            if datatype is int or float:
-                for item in data:
-                    for i in args:
-                        it = iter(i)
-                        if item >= next(it) and item <= next(it):
-                            result.add(item)
-                            break
-        except StopIteration:
-            pass
-        if datatype is str:
+        else:
             for item in data:
                 for i in args:
-                    if i in item:
-                        result.add(item)
-                        break
-        if datatype is list:
-            raise TypeException
+                    if type(i) is set or list or tuple:
+                        try:
+                            it = iter(i)
+                            if item >= next(it) and item <= next(it):
+                                result.add(item)
+                                break
+                        except StopIteration:
+                            pass
+                    elif type(i) is str:
+                        if i in item:
+                            result.add(item)
+                            break
         return result
     except NoneException:
         print("Error in dataSampling")
-    except TypeException:
-        print("Please enter the correct data type in dataScreening(int or float or str)")
+    except TypeError:
+        print("Please enter the correct data conditions in dataScreening")
 
 def apply():
     "To test the program"
@@ -97,9 +91,9 @@ def apply():
     data2 = dataSampling(float, (1, 100), 12)
     data3 = dataSampling(str, string.ascii_letters + string.digits + "@#$!", 12, 5)
 
-    test1 = dataScreening(data1, int, (0, 10), (50, 100))
-    test2 = dataScreening(data2, float, (0, 20), (40, 70))
-    test3 = dataScreening(data3, str, 'a', 'c', 'at')
+    test1 = dataScreening(data1, (0, 10), (50, 100))
+    test2 = dataScreening(data2, (0, 20), (40, 70))
+    test3 = dataScreening(data3, 'a', 'c', 'at')
 
     if data1 is not None:
         print(data1)
@@ -117,13 +111,22 @@ def apply():
         print(test3)
 
 def applyError():
-    data1 = dataSampling(list, (1, 100), 12)
-    test1 = dataScreening(data1, int, (0, 10), (50, 100))
+    "To test the wrong program"
+    data4 = dataSampling(list, (1, 100), 12)
+    test4 = dataScreening(data4, (0, 10), (50, 100))
 
-    if data1 is not None:
-        print(data1)
-    if test1 is not None:
-        print(test1)
+    if data4 is not None:
+        print(data4)
+    if test4 is not None:
+        print(test4)
+
+    data5 = dataSampling(int, (1, 100), 12)
+    test5 = dataScreening(data5, 70, 90, 20, 50)
+
+    if data5 is not None:
+        print(data5)
+    if test5 is not None:
+        print(test5)
 
 apply()
 applyError()
